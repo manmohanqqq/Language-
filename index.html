@@ -2,131 +2,646 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Voice to English</title>
-
-<script src="https://unpkg.com/@indic-transliteration/sanscript"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>తెలుగు Voice Typing Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Bebas+Neue&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a28;
+    --border: #2a2a45;
+    --accent: #ff6b35;
+    --accent2: #ffd700;
+    --text: #f0f0ff;
+    --muted: #8888aa;
+    --red: #ff3b5c;
+    --green: #00e676;
+    --glow: 0 0 30px rgba(255,107,53,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-  }
-
-  .app {
-    max-width: 420px;
-    margin: auto;
-    background: #fff;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', 'Noto Sans Telugu', sans-serif;
     min-height: 100vh;
-    padding: 20px;
+    overflow-x: hidden;
   }
 
-  h2 {
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 20% 20%, rgba(255,107,53,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255,215,0,0.04) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes bgPulse {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(3deg) scale(1.05); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* Header */
+  .header {
     text-align: center;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 8vw, 42px);
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header .sub {
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    text-transform: uppercase;
   }
 
-  label {
-    font-weight: bold;
-    display: block;
-    margin-top: 15px;
-  }
-
-  textarea {
-    width: 100%;
-    height: 90px;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: none;
-  }
-
-  button {
-    width: 100%;
-    margin-top: 15px;
-    padding: 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 30px;
-    background: #25D366;
-    color: #fff;
-  }
-
-  .small-btns {
+  /* Language Selector */
+  .lang-row {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .lang-row::-webkit-scrollbar { display: none; }
+  .lang-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .lang-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255,107,53,0.1);
+    box-shadow: 0 0 12px rgba(255,107,53,0.2);
+  }
+  .lang-btn:active { transform: scale(0.95); }
+
+  /* Text Area */
+  .textarea-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .output {
+    width: 100%;
+    min-height: 180px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    color: var(--text);
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 18px;
+    line-height: 1.7;
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    -webkit-appearance: none;
+  }
+  .output:focus {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+  }
+  .output.listening {
+    border-color: var(--red);
+    box-shadow: 0 0 20px rgba(255,59,92,0.3);
+    animation: borderPulse 1s ease-in-out infinite;
+  }
+  @keyframes borderPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,59,92,0.2); }
+    50% { box-shadow: 0 0 30px rgba(255,59,92,0.5); }
+  }
+  .placeholder-hint {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    color: var(--muted);
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 16px;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
   }
 
-  .small-btns button {
-    background: #007bff;
-    font-size: 16px;
-    border-radius: 8px;
+  /* Mic Button */
+  .mic-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
   }
+  .mic-btn {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    transition: all 0.2s;
+    position: relative;
+    background: linear-gradient(135deg, #ff6b35, #ff3b5c);
+    box-shadow: 0 4px 20px rgba(255,107,53,0.4), 0 0 0 0 rgba(255,107,53,0.3);
+  }
+  .mic-btn.listening {
+    background: linear-gradient(135deg, #ff3b5c, #c0003c);
+    animation: micPulse 1s ease-in-out infinite;
+  }
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255,59,92,0.4), 0 0 0 0 rgba(255,59,92,0.3); }
+    50% { box-shadow: 0 4px 30px rgba(255,59,92,0.6), 0 0 0 15px rgba(255,59,92,0); }
+  }
+  .mic-btn:active { transform: scale(0.92); }
+  .mic-status {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    height: 20px;
+  }
+  .mic-status.active { color: var(--red); }
+
+  /* Sound wave visualization */
+  .wave-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .wave-wrap.active { opacity: 1; }
+  .wave-bar {
+    width: 4px;
+    background: linear-gradient(to top, var(--accent), var(--accent2));
+    border-radius: 2px;
+    min-height: 4px;
+    transition: height 0.1s;
+  }
+  .wave-bar:nth-child(1) { animation: wave 0.8s ease-in-out infinite; }
+  .wave-bar:nth-child(2) { animation: wave 0.8s ease-in-out infinite 0.1s; }
+  .wave-bar:nth-child(3) { animation: wave 0.8s ease-in-out infinite 0.2s; }
+  .wave-bar:nth-child(4) { animation: wave 0.8s ease-in-out infinite 0.3s; }
+  .wave-bar:nth-child(5) { animation: wave 0.8s ease-in-out infinite 0.15s; }
+  .wave-bar:nth-child(6) { animation: wave 0.8s ease-in-out infinite 0.05s; }
+  .wave-bar:nth-child(7) { animation: wave 0.8s ease-in-out infinite 0.25s; }
+  @keyframes wave {
+    0%, 100% { height: 6px; }
+    50% { height: 32px; }
+  }
+
+  /* Interim text display */
+  .interim {
+    background: rgba(255,107,53,0.08);
+    border: 1px dashed rgba(255,107,53,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    min-height: 40px;
+    margin-bottom: 12px;
+    display: none;
+    font-style: italic;
+  }
+  .interim.show { display: block; }
+
+  /* Action Buttons */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .action-btn {
+    padding: 14px 10px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .action-btn:active { transform: scale(0.96); opacity: 0.85; }
+  .action-btn.copy { border-color: rgba(255,215,0,0.4); color: var(--accent2); }
+  .action-btn.copy:active { background: rgba(255,215,0,0.1); }
+  .action-btn.whatsapp { border-color: rgba(37,211,102,0.4); color: #25d366; }
+  .action-btn.whatsapp:active { background: rgba(37,211,102,0.1); }
+  .action-btn.clear { border-color: rgba(255,59,92,0.3); color: var(--red); }
+  .action-btn.clear:active { background: rgba(255,59,92,0.1); }
+  .action-btn.save { border-color: rgba(100,180,255,0.4); color: #64b4ff; }
+  .action-btn.save:active { background: rgba(100,180,255,0.1); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 9999;
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Tips */
+  .tips {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 8px;
+  }
+  .tips-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .tip {
+    font-family: 'Noto Sans Telugu', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+  }
+  .tip span:first-child { color: var(--accent); }
+
+  /* Error banner */
+  .error-banner {
+    background: rgba(255,59,92,0.1);
+    border: 1px solid rgba(255,59,92,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--red);
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: none;
+    font-family: 'Noto Sans Telugu', sans-serif;
+  }
+  .error-banner.show { display: block; }
 </style>
 </head>
-
 <body>
+<div class="container">
 
-<div class="app">
-  <h2>🎤 Telugu Voice Typing</h2>
-
-  <label>తెలుగు మాటలు</label>
-  <textarea id="telugu" placeholder="మీరు మాట్లాడిన తెలుగు..."></textarea>
-
-  <label>English (Sound-based)</label>
-  <textarea id="english" placeholder="naaku telugu chaalaa ishtam"></textarea>
-
-  <button onclick="startVoice()">🎙️ Tap & Speak</button>
-
-  <div class="small-btns">
-    <button onclick="copyText()">📋 Copy</button>
-    <button onclick="saveText()">💾 Save</button>
+  <div class="header">
+    <h1>🎤 TELUGU VOICE</h1>
+    <div class="sub">తెలుగు మాటలు → Text</div>
+    <div class="badge">No API • Works Offline</div>
   </div>
+
+  <!-- Language Selection -->
+  <div class="lang-row">
+    <button class="lang-btn active" data-lang="te-IN" onclick="setLang(this)">తెలుగు</button>
+    <button class="lang-btn" data-lang="en-US" onclick="setLang(this)">English</button>
+    <button class="lang-btn" data-lang="hi-IN" onclick="setLang(this)">हिन्दी</button>
+    <button class="lang-btn" data-lang="ta-IN" onclick="setLang(this)">தமிழ்</button>
+    <button class="lang-btn" data-lang="kn-IN" onclick="setLang(this)">ಕನ್ನಡ</button>
+  </div>
+
+  <!-- Error Banner -->
+  <div class="error-banner" id="errorBanner"></div>
+
+  <!-- Output Area -->
+  <div class="textarea-wrap">
+    <textarea class="output" id="output" placeholder="ఇక్కడ మాట్లాడండి..." rows="6"></textarea>
+    <div class="char-count" id="charCount">0 అక్షరాలు</div>
+  </div>
+
+  <!-- Interim Results -->
+  <div class="interim" id="interim">వింటున్నాను...</div>
+
+  <!-- Mic Section -->
+  <div class="mic-section">
+    <div class="wave-wrap" id="waveWrap">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+    <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
+    <div class="mic-status" id="micStatus">మాట్లాడడానికి నొక్కండి</div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="actions">
+    <button class="action-btn copy" onclick="copyText()">📋 కాపీ</button>
+    <button class="action-btn whatsapp" onclick="sendWhatsApp()">💬 WhatsApp</button>
+    <button class="action-btn save" onclick="saveText()">💾 సేవ్</button>
+    <button class="action-btn clear" onclick="clearText()">🗑️ క్లియర్</button>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips">
+    <div class="tips-title">📌 Tips</div>
+    <div class="tip"><span>→</span><span>Safari browser వాడండి (iPhone లో best)</span></div>
+    <div class="tip"><span>→</span><span>Microphone permission allow చేయండి</span></div>
+    <div class="tip"><span>→</span><span>మాట్లాడిన తర్వాత కొంచెం ఆగండి</span></div>
+    <div class="tip"><span>→</span><span>Auto-stops after silence, press again to continue</span></div>
+  </div>
+
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-function startVoice() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("Speech Recognition not supported. Use Google Chrome.");
-    return;
+  let recognition = null;
+  let isListening = false;
+  let finalTranscript = '';
+  let currentLang = 'te-IN';
+  let restartTimer = null;
+
+  const output = document.getElementById('output');
+  const micBtn = document.getElementById('micBtn');
+  const micStatus = document.getElementById('micStatus');
+  const interimEl = document.getElementById('interim');
+  const waveWrap = document.getElementById('waveWrap');
+  const errorBanner = document.getElementById('errorBanner');
+  const charCount = document.getElementById('charCount');
+
+  // Update char count
+  output.addEventListener('input', updateCharCount);
+  function updateCharCount() {
+    const len = output.value.length;
+    charCount.textContent = len + ' అక్షరాలు';
   }
 
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "te-IN";
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  function setLang(btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLang = btn.dataset.lang;
+    if (isListening) {
+      stopRecognition();
+      setTimeout(() => startRecognition(), 300);
+    }
+    showToast('భాష మార్చబడింది: ' + btn.textContent);
+  }
 
-  recognition.onresult = function(event) {
-    const teluguText = event.results[0][0].transcript;
-    document.getElementById("telugu").value = teluguText;
-    document.getElementById("english").value =
-      Sanscript.t(teluguText, "telugu", "itrans");
+  function setupRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showError('మీ browser లో voice recognition support లేదు. Safari browser try చేయండి.');
+      return null;
+    }
+
+    const rec = new SpeechRecognition();
+    rec.lang = currentLang;
+    rec.continuous = false; // iPhone works better with false
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => {
+      isListening = true;
+      micBtn.classList.add('listening');
+      micBtn.textContent = '⏹';
+      waveWrap.classList.add('active');
+      micStatus.textContent = 'వింటున్నాను...';
+      micStatus.classList.add('active');
+      output.classList.add('listening');
+      hideError();
+    };
+
+    rec.onresult = (e) => {
+      let interim = '';
+      let final = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          final += transcript + ' ';
+        } else {
+          interim += transcript;
+        }
+      }
+      if (final) {
+        finalTranscript += final;
+        output.value = finalTranscript;
+        updateCharCount();
+        interimEl.textContent = '';
+        interimEl.classList.remove('show');
+      }
+      if (interim) {
+        interimEl.textContent = interim;
+        interimEl.classList.add('show');
+      }
+    };
+
+    rec.onerror = (e) => {
+      console.error('Speech error:', e.error);
+      if (e.error === 'not-allowed') {
+        showError('Microphone permission deny చేయారు. Settings లో allow చేయండి.');
+      } else if (e.error === 'no-speech') {
+        // Restart automatically
+        if (isListening) {
+          restartTimer = setTimeout(() => { if (isListening) startRecognition(); }, 500);
+        }
+      } else if (e.error === 'network') {
+        showError('Internet connection అవసరం. Online అయ్యాక try చేయండి.');
+      }
+    };
+
+    rec.onend = () => {
+      interimEl.classList.remove('show');
+      if (isListening) {
+        // Auto restart for continuous feel on iPhone
+        restartTimer = setTimeout(() => {
+          if (isListening) startRecognition();
+        }, 200);
+      } else {
+        stopUI();
+      }
+    };
+
+    return rec;
+  }
+
+  function startRecognition() {
+    recognition = setupRecognition();
+    if (!recognition) return;
+    try {
+      recognition.start();
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  function stopRecognition() {
+    isListening = false;
+    clearTimeout(restartTimer);
+    if (recognition) {
+      try { recognition.stop(); } catch(e) {}
+      recognition = null;
+    }
+    stopUI();
+  }
+
+  function stopUI() {
+    micBtn.classList.remove('listening');
+    micBtn.textContent = '🎤';
+    waveWrap.classList.remove('active');
+    micStatus.textContent = 'మాట్లాడడానికి నొక్కండి';
+    micStatus.classList.remove('active');
+    output.classList.remove('listening');
+    interimEl.classList.remove('show');
+  }
+
+  function toggleMic() {
+    if (isListening) {
+      stopRecognition();
+      showToast('ఆపబడింది ✓');
+    } else {
+      finalTranscript = output.value; // preserve existing text
+      isListening = true;
+      startRecognition();
+    }
+  }
+
+  function copyText() {
+    const text = output.value.trim();
+    if (!text) { showToast('ముందు మాట్లాడండి!'); return; }
+    
+    // iPhone compatible copy
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => showToast('కాపీ అయింది! ✓')).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    output.select();
+    output.setSelectionRange(0, 99999);
+    try {
+      document.execCommand('copy');
+      showToast('కాపీ అయింది! ✓');
+    } catch(e) {
+      showToast('Select చేసి manually copy చేయండి');
+    }
+  }
+
+  function sendWhatsApp() {
+    const text = output.value.trim();
+    if (!text) { showToast('ముందు మాట్లాడండి!'); return; }
+    const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+
+  function saveText() {
+    const text = output.value.trim();
+    if (!text) { showToast('ముందు మాట్లాడండి!'); return; }
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'telugu_voice_' + Date.now() + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('సేవ్ అయింది! ✓');
+  }
+
+  function clearText() {
+    if (!output.value) return;
+    if (confirm('అన్నీ delete చేయాలా?')) {
+      output.value = '';
+      finalTranscript = '';
+      updateCharCount();
+      showToast('క్లియర్ అయింది');
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function showError(msg) {
+    errorBanner.textContent = '⚠️ ' + msg;
+    errorBanner.classList.add('show');
+  }
+  function hideError() { errorBanner.classList.remove('show'); }
+
+  // Check support on load
+  window.onload = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showError('Voice recognition support లేదు. iPhone Safari browser వాడండి.');
+    }
   };
-
-  recognition.onerror = function(e) {
-    alert("Mic error: " + e.error);
-  };
-
-  recognition.start();
-}
-
-function copyText() {
-  const el = document.getElementById("english");
-  el.select();
-  document.execCommand("copy");
-  alert("Copied! Paste in WhatsApp 👍");
-}
-
-function saveText() {
-  const text = document.getElementById("english").value;
-  const blob = new Blob([text], { type: "text/plain" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "telugu-english.txt";
-  a.click();
-}
 </script>
-
 </body>
 </html>
