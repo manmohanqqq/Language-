@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telugu Voice to English</title>
+
+<script src="https://unpkg.com/@indic-transliteration/sanscript"></script>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+  }
+
+  .app {
+    max-width: 420px;
+    margin: auto;
+    background: #fff;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 90px;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    background: #25D366;
+    color: #fff;
+  }
+
+  .small-btns {
+    display: flex;
+    gap: 10px;
+  }
+
+  .small-btns button {
+    background: #007bff;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <h2>🎤 Telugu Voice Typing</h2>
+
+  <label>తెలుగు మాటలు</label>
+  <textarea id="telugu" placeholder="మీరు మాట్లాడిన తెలుగు..."></textarea>
+
+  <label>English (Sound-based)</label>
+  <textarea id="english" placeholder="naaku telugu chaalaa ishtam"></textarea>
+
+  <button onclick="startVoice()">🎙️ Tap & Speak</button>
+
+  <div class="small-btns">
+    <button onclick="copyText()">📋 Copy</button>
+    <button onclick="saveText()">💾 Save</button>
+  </div>
+</div>
+
+<script>
+function startVoice() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Speech Recognition not supported. Use Google Chrome.");
+    return;
+  }
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "te-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = function(event) {
+    const teluguText = event.results[0][0].transcript;
+    document.getElementById("telugu").value = teluguText;
+    document.getElementById("english").value =
+      Sanscript.t(teluguText, "telugu", "itrans");
+  };
+
+  recognition.onerror = function(e) {
+    alert("Mic error: " + e.error);
+  };
+
+  recognition.start();
+}
+
+function copyText() {
+  const el = document.getElementById("english");
+  el.select();
+  document.execCommand("copy");
+  alert("Copied! Paste in WhatsApp 👍");
+}
+
+function saveText() {
+  const text = document.getElementById("english").value;
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "telugu-english.txt";
+  a.click();
+}
+</script>
+
+</body>
+</html>
