@@ -3,73 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Voice to English</title>
+<title>Telugu Voice Typing Pro</title>
 
+<!-- Telugu Transliteration Library -->
 <script src="https://unpkg.com/@indic-transliteration/sanscript"></script>
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-  }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#ece5dd;
+}
 
-  .app {
-    max-width: 420px;
-    margin: auto;
-    background: #fff;
-    min-height: 100vh;
-    padding: 20px;
-  }
+.app{
+  max-width:420px;
+  margin:auto;
+  background:#fff;
+  min-height:100vh;
+  padding:20px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
 
-  h2 {
-    text-align: center;
-  }
+h2{
+  text-align:center;
+  color:#075e54;
+}
 
-  label {
-    font-weight: bold;
-    display: block;
-    margin-top: 15px;
-  }
+label{
+  font-weight:bold;
+  margin-top:15px;
+  display:block;
+}
 
-  textarea {
-    width: 100%;
-    height: 90px;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: none;
-  }
+textarea{
+  width:100%;
+  height:90px;
+  padding:10px;
+  font-size:16px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  resize:none;
+}
 
-  button {
-    width: 100%;
-    margin-top: 15px;
-    padding: 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 30px;
-    background: #25D366;
-    color: #fff;
-  }
+button{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  font-size:18px;
+  border:none;
+  border-radius:30px;
+  background:#25D366;
+  color:white;
+  font-weight:bold;
+}
 
-  .small-btns {
-    display: flex;
-    gap: 10px;
-  }
+.stop{
+  background:#ff3b30;
+}
 
-  .small-btns button {
-    background: #007bff;
-    font-size: 16px;
-    border-radius: 8px;
-  }
+.small-btns{
+  display:flex;
+  gap:10px;
+}
+
+.small-btns button{
+  background:#007bff;
+  font-size:15px;
+  border-radius:10px;
+  padding:12px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="app">
-  <h2>🎤 Telugu Voice Typing</h2>
+  <h2>🎤 Telugu Voice Typing Pro</h2>
 
   <label>తెలుగు మాటలు</label>
   <textarea id="telugu" placeholder="మీరు మాట్లాడిన తెలుగు..."></textarea>
@@ -77,54 +86,77 @@
   <label>English (Sound-based)</label>
   <textarea id="english" placeholder="naaku telugu chaalaa ishtam"></textarea>
 
-  <button onclick="startVoice()">🎙️ Tap & Speak</button>
+  <button onclick="startVoice()">🎙️ Start Speaking</button>
+  <button class="stop" onclick="stopVoice()">⏹ Stop</button>
 
   <div class="small-btns">
     <button onclick="copyText()">📋 Copy</button>
     <button onclick="saveText()">💾 Save</button>
+    <button onclick="sendWhatsApp()">📲 WhatsApp</button>
   </div>
 </div>
 
 <script>
-function startVoice() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("Speech Recognition not supported. Use Google Chrome.");
+let recognition;
+
+function startVoice(){
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+    alert("Speech Recognition not supported. Use Chrome or Edge.");
     return;
   }
 
-  const recognition = new webkitSpeechRecognition();
+  recognition = new SpeechRecognition();
   recognition.lang = "te-IN";
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.continuous = true;
+  recognition.interimResults = true;
 
-  recognition.onresult = function(event) {
-    const teluguText = event.results[0][0].transcript;
-    document.getElementById("telugu").value = teluguText;
+  recognition.onresult = function(event){
+    let finalText = "";
+
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      finalText += event.results[i][0].transcript;
+    }
+
+    document.getElementById("telugu").value = finalText;
+
     document.getElementById("english").value =
-      Sanscript.t(teluguText, "telugu", "itrans");
+      Sanscript.t(finalText, "telugu", "itrans");
   };
 
-  recognition.onerror = function(e) {
+  recognition.onerror = function(e){
     alert("Mic error: " + e.error);
   };
 
   recognition.start();
 }
 
-function copyText() {
-  const el = document.getElementById("english");
-  el.select();
-  document.execCommand("copy");
-  alert("Copied! Paste in WhatsApp 👍");
+function stopVoice(){
+  if(recognition) recognition.stop();
 }
 
-function saveText() {
+function copyText(){
   const text = document.getElementById("english").value;
-  const blob = new Blob([text], { type: "text/plain" });
+  navigator.clipboard.writeText(text).then(()=>{
+    alert("Copied!");
+  });
+}
+
+function saveText(){
+  const text = document.getElementById("english").value;
+  const blob = new Blob([text], {type:"text/plain"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "telugu-english.txt";
   a.click();
+}
+
+function sendWhatsApp(){
+  const text = document.getElementById("english").value;
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
 }
 </script>
 
