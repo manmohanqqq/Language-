@@ -17,7 +17,6 @@
     --text: #f0e6d3;
     --text-dim: #7a6a58;
     --text-muted: #3d3228;
-    --pulse-color: rgba(232, 168, 56, 0.4);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,21 +30,7 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    position: relative;
     overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(232,168,56,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   .grain {
@@ -57,750 +42,201 @@
     opacity: 0.5;
   }
 
-  .container {
-    width: 100%;
-    max-width: 560px;
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
+  .container { width: 100%; max-width: 560px; position: relative; z-index: 1; }
 
-  header {
-    padding: 40px 0 32px;
-    text-align: center;
-  }
+  header { padding: 40px 0 32px; text-align: center; }
+  .logo-line { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .logo-glyph { font-family: 'Noto Sans Telugu', serif; font-size: 28px; color: var(--amber); }
+  .logo-en { font-family: 'Playfair Display', serif; font-size: 22px; }
+  .tagline { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 6px; }
 
-  .logo-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .logo-glyph {
-    font-family: 'Noto Sans Telugu', serif;
-    font-size: 28px;
-    color: var(--amber);
-    line-height: 1;
-  }
-
-  .logo-arrow {
-    color: var(--amber-dim);
-    font-size: 16px;
-    letter-spacing: 2px;
-  }
-
-  .logo-en {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    color: var(--text);
-    font-weight: 400;
-  }
-
-  .tagline {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-top: 6px;
-  }
-
-  /* Main card */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .card-section {
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 12px; }
+  .card-section { padding: 20px; border-bottom: 1px solid var(--border); }
   .card-section:last-child { border-bottom: none; }
 
-  .section-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .section-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* Mic Button Area */
-  .mic-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 20px;
-    gap: 20px;
-  }
-
-  .mic-outer {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .pulse-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 1px solid var(--amber-dim);
-    animation: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .pulse-ring:nth-child(2) { transform: scale(1.25); }
-  .pulse-ring:nth-child(3) { transform: scale(1.5); }
-
-  .recording .pulse-ring:nth-child(1) {
-    animation: pulse 1.8s ease-out infinite;
-    opacity: 1;
-  }
-  .recording .pulse-ring:nth-child(2) {
-    animation: pulse 1.8s ease-out 0.3s infinite;
-    opacity: 1;
-  }
-  .recording .pulse-ring:nth-child(3) {
-    animation: pulse 1.8s ease-out 0.6s infinite;
-    opacity: 1;
-  }
-
-  @keyframes pulse {
-    0% { opacity: 0.6; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.6); }
-  }
-
-  .recording .pulse-ring:nth-child(2) { animation-delay: 0.3s; }
-  .recording .pulse-ring:nth-child(3) { animation-delay: 0.6s; }
-
-  .mic-btn {
-    position: relative;
-    z-index: 2;
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    border: 2px solid var(--amber-dim);
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s ease;
-    outline: none;
-  }
-
-  .mic-btn:hover {
-    border-color: var(--amber);
-    background: var(--amber-glow);
-  }
-
-  .mic-btn.active {
-    border-color: var(--red);
-    background: rgba(192, 57, 43, 0.15);
-    animation: mic-breathe 1.2s ease-in-out infinite;
-  }
-
-  @keyframes mic-breathe {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(192,57,43,0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(192,57,43,0); }
-  }
-
-  .mic-icon {
-    width: 28px;
-    height: 28px;
-    transition: all 0.25s;
-  }
-
-  .mic-btn.active .mic-icon path,
-  .mic-btn.active .mic-icon rect {
-    stroke: #e55;
-  }
-
-  .mic-status {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    transition: color 0.3s;
-    text-align: center;
-  }
-
-  .mic-status.active { color: #e55; }
+  /* Mic Button & Pulse */
+  .mic-area { display: flex; flex-direction: column; align-items: center; padding: 30px; gap: 16px; }
+  .mic-btn { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--amber-dim); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; z-index: 10; }
+  .mic-btn.active { border-color: var(--red); background: rgba(192, 57, 43, 0.1); }
+  
+  .pulse-ring { position: absolute; width: 72px; height: 72px; border-radius: 50%; border: 1px solid var(--amber-dim); opacity: 0; pointer-events: none; }
+  .recording .pulse-ring { animation: pulse 1.5s ease-out infinite; opacity: 1; }
+  @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
 
   /* Waveform */
-  .waveform {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    height: 24px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
+  .waveform { display: flex; align-items: center; gap: 3px; height: 20px; opacity: 0; }
   .waveform.visible { opacity: 1; }
+  .wave-bar { width: 3px; height: 4px; background: var(--amber); border-radius: 2px; }
+  .visible .wave-bar { animation: wave 0.8s ease-in-out infinite; }
+  @keyframes wave { 0%, 100% { height: 4px; } 50% { height: 20px; } }
 
-  .wave-bar {
-    width: 3px;
-    background: var(--amber);
-    border-radius: 2px;
-    min-height: 3px;
-    animation: none;
-  }
+  /* Output Boxes */
+  .output-box { background: var(--bg); padding: 16px; min-height: 60px; position: relative; border-radius: 2px; }
+  .output-box.telugu { font-family: 'Noto Sans Telugu', serif; font-size: 20px; }
+  .output-box.english { font-family: 'IBM Plex Mono', monospace; color: var(--amber); font-size: 16px; }
+  .placeholder { color: var(--text-muted); font-size: 12px; font-family: 'IBM Plex Mono'; position: absolute; }
 
-  .waveform.visible .wave-bar {
-    animation: wave 0.8s ease-in-out infinite;
-  }
+  /* Actions & History */
+  .action-bar { display: flex; gap: 8px; padding: 12px 20px; }
+  .action-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .action-btn:hover { color: var(--amber); border-color: var(--amber); }
 
-  .wave-bar:nth-child(1) { animation-delay: 0s; }
-  .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-  .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-  .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-  .wave-bar:nth-child(5) { animation-delay: 0.4s; }
-  .wave-bar:nth-child(6) { animation-delay: 0.3s; }
-  .wave-bar:nth-child(7) { animation-delay: 0.2s; }
-  .wave-bar:nth-child(8) { animation-delay: 0.1s; }
-  .wave-bar:nth-child(9) { animation-delay: 0s; }
-
-  @keyframes wave {
-    0%, 100% { height: 4px; }
-    50% { height: 20px; }
-  }
-
-  /* Text outputs */
-  .output-box {
-    background: var(--bg);
-    border-radius: 2px;
-    min-height: 72px;
-    padding: 14px;
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text);
-    position: relative;
-    transition: all 0.3s;
-  }
-
-  .output-box.telugu {
-    font-family: 'Noto Sans Telugu', serif;
-    font-size: 18px;
-  }
-
-  .output-box.english {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 15px;
-    color: var(--amber);
-  }
-
-  .placeholder-text {
-    color: var(--text-muted);
-    font-size: 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-    pointer-events: none;
-  }
-
-  .output-box.has-content .placeholder-text { display: none; }
-
-  /* Action bar */
-  .action-bar {
-    display: flex;
-    gap: 8px;
-    padding: 12px 20px;
-    border-top: 1px solid var(--border);
-  }
-
-  .action-btn {
-    flex: 1;
-    padding: 9px 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    color: var(--text-dim);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .action-btn:hover {
-    border-color: var(--amber-dim);
-    color: var(--amber);
-    background: var(--amber-glow);
-  }
-
-  .action-btn:active { transform: scale(0.97); }
-
-  .action-btn.primary {
-    border-color: var(--amber-dim);
-    color: var(--amber);
-  }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface);
-    border: 1px solid var(--amber-dim);
-    color: var(--amber);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    border-radius: 2px;
-    opacity: 0;
-    transition: all 0.35s ease;
-    pointer-events: none;
-    z-index: 100;
-    white-space: nowrap;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  /* History */
-  .history-list {
-    max-height: 200px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .history-item {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--text-muted);
-    cursor: pointer;
-    transition: background 0.2s;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: start;
-  }
-
+  .history-list { max-height: 200px; overflow-y: auto; }
+  .history-item { padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
   .history-item:hover { background: var(--border); }
-  .history-item:last-child { border-bottom: none; }
+  .history-telugu { font-family: 'Noto Sans Telugu'; font-size: 14px; }
+  .history-en { font-size: 11px; color: var(--amber-dim); }
 
-  .history-telugu {
-    font-family: 'Noto Sans Telugu', serif;
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.4;
-  }
-
-  .history-en {
-    font-size: 11px;
-    color: var(--amber-dim);
-    margin-top: 2px;
-    word-break: break-all;
-  }
-
-  .history-time {
-    font-size: 9px;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    white-space: nowrap;
-    padding-top: 3px;
-  }
-
-  .empty-history {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 20px;
-  }
-
-  /* Unsupported */
-  .unsupported {
-    background: rgba(192,57,43,0.1);
-    border: 1px solid rgba(192,57,43,0.3);
-    border-radius: 2px;
-    padding: 16px;
-    text-align: center;
-    font-size: 12px;
-    color: #e55;
-    letter-spacing: 1px;
-  }
-
-  /* Responsive */
-  @media (max-width: 400px) {
-    .mic-btn { width: 64px; height: 64px; }
-    .mic-outer { width: 90px; height: 90px; }
-    .output-box.telugu { font-size: 16px; }
-    header { padding: 24px 0 20px; }
-  }
-
-  .fade-in {
-    animation: fadeIn 0.4s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .toast { position: fixed; bottom: 20px; background: var(--surface); border: 1px solid var(--amber); padding: 8px 16px; font-size: 11px; color: var(--amber); opacity: 0; transition: 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 <div class="grain"></div>
-
 <div class="container">
   <header>
     <div class="logo-line">
       <span class="logo-glyph">తె</span>
-      <span class="logo-arrow">——›</span>
+      <span style="color:var(--amber-dim)">—›</span>
       <span class="logo-en">English</span>
     </div>
-    <div class="tagline">Telugu Voice · Transliteration</div>
+    <div class="tagline">Local P2P Voice Transliteration</div>
   </header>
 
-  <div id="unsupported-msg" class="unsupported" style="display:none;margin-bottom:16px;">
-    ⚠ Speech recognition is not supported in this browser. Please use Chrome or Edge on Android/Desktop.
+  <div class="card">
+    <div class="mic-area" id="micContainer">
+      <div style="position:relative; display:flex; justify-content:center; align-items:center;">
+        <div class="pulse-ring"></div>
+        <button class="mic-btn" id="micBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+      </div>
+      <div id="micStatus" style="font-size:10px; color:var(--text-dim); letter-spacing:2px;">TAP TO SPEAK</div>
+      <div class="waveform" id="waveform">
+        <div class="wave-bar"></div><div class="wave-bar" style="animation-delay:0.1s"></div><div class="wave-bar" style="animation-delay:0.2s"></div><div class="wave-bar" style="animation-delay:0.3s"></div><div class="wave-bar" style="animation-delay:0.4s"></div>
+      </div>
+    </div>
+
+    <div class="card-section">
+      <div class="section-label">Telugu Script</div>
+      <div class="output-box telugu" id="teluguOutput"><span class="placeholder">Awaiting input...</span></div>
+    </div>
+
+    <div class="card-section">
+      <div class="section-label">English Phonetic</div>
+      <div class="output-box english" id="englishOutput"><span class="placeholder">Transliteration...</span></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="action-btn" id="copyBtn">Copy English</button>
+      <button class="action-btn" id="clearBtn">Clear</button>
+    </div>
   </div>
 
   <div class="card">
-    <!-- Mic section -->
-    <div class="card-section" style="padding:0; border-bottom:1px solid var(--border);">
-      <div id="mic-outer-wrap" class="mic-outer" style="width:100%;height:auto;display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;gap:16px;">
-        <div style="position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center;">
-          <div id="pr1" class="pulse-ring"></div>
-          <div id="pr2" class="pulse-ring"></div>
-          <div id="pr3" class="pulse-ring"></div>
-          <button class="mic-btn" id="micBtn" title="Hold to speak" aria-label="Start recording">
-            <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor"/>
-              <path d="M5 10a7 7 0 0 0 14 0" stroke-width="1.5"/>
-              <line x1="12" y1="17" x2="12" y2="21"/>
-              <line x1="9" y1="21" x2="15" y2="21"/>
-            </svg>
-          </button>
-        </div>
-        <div class="mic-status" id="micStatus">Tap to speak Telugu</div>
-        <div class="waveform" id="waveform">
-          <div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Telugu output -->
-    <div class="card-section">
-      <div class="section-label">Telugu Script</div>
-      <div class="output-box telugu" id="teluguOutput">
-        <span class="placeholder-text">— recognized speech —</span>
-      </div>
-    </div>
-
-    <!-- English transliteration -->
-    <div class="card-section">
-      <div class="section-label">English Transliteration</div>
-      <div class="output-box english" id="englishOutput">
-        <span class="placeholder-text">— transliterated text —</span>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="action-bar">
-      <button class="action-btn primary" id="copyBtn">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copy
-      </button>
-      <button class="action-btn" id="clearBtn">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-        Clear
-      </button>
-    </div>
-  </div>
-
-  <!-- History -->
-  <div class="card" style="margin-top:12px;">
-    <div class="card-section" style="padding:14px 20px 10px;">
-      <div class="section-label" style="margin-bottom:0;">Session History</div>
-    </div>
-    <div class="history-list" id="historyList">
-      <div class="empty-history">No entries yet</div>
-    </div>
+    <div class="card-section" style="padding:10px 20px;"><div class="section-label">History</div></div>
+    <div class="history-list" id="historyList"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Telugu → English Transliteration Map ───────────────────────────────────
 const TELUGU_MAP = {
-  // Vowels
-  'అ':'a','ఆ':'aa','ఇ':'i','ఈ':'ee','ఉ':'u','ఊ':'oo','ఋ':'ru',
-  'ఎ':'e','ఏ':'ae','ఐ':'ai','ఒ':'o','ఓ':'oo','ఔ':'au',
-  // Vowel signs (matras)
-  'ా':'aa','ి':'i','ీ':'ee','ు':'u','ూ':'oo','ృ':'ru',
-  'ె':'e','ే':'ae','ై':'ai','ొ':'o','ో':'oo','ౌ':'au',
-  'ం':'m','ః':'h','ఁ':'n',
-  // Consonants
-  'క':'ka','ఖ':'kha','గ':'ga','ఘ':'gha','ఙ':'nga',
-  'చ':'cha','ఛ':'chha','జ':'ja','ఝ':'jha','ఞ':'nya',
-  'ట':'ta','ఠ':'tha','డ':'da','ఢ':'dha','ణ':'na',
-  'త':'tha','థ':'thha','ద':'da','ధ':'dha','న':'na',
-  'ప':'pa','ఫ':'pha','బ':'ba','భ':'bha','మ':'ma',
-  'య':'ya','ర':'ra','ల':'la','వ':'va',
-  'శ':'sha','ష':'sha','స':'sa','హ':'ha',
-  'ళ':'la','ఴ':'zha','ఱ':'ra',
-  'క్ష':'ksha','జ్ఞ':'gna',
-  // Halant
-  '్':'',
-  // Numbers
-  '౦':'0','౧':'1','౨':'2','౩':'3','౪':'4',
-  '౫':'5','౬':'6','౭':'7','౮':'8','౯':'9',
+  'అ':'a','ఆ':'aa','ఇ':'i','ఈ':'ee','ఉ':'u','ఊ':'oo','ఋ':'ru','ఎ':'e','ఏ':'ae','ఐ':'ai','ఒ':'o','ఓ':'oo','ఔ':'au',
+  'ా':'aa','ి':'i','ీ':'ee','ు':'u','ూ':'oo','ృ':'ru','ె':'e','ే':'ae','ై':'ai','ొ':'o','ో':'oo','ౌ':'au','ం':'m','ః':'h',
+  'క':'ka','ఖ':'kha','గ':'ga','ఘ':'gha','ఙ':'nga','చ':'cha','ఛ':'chha','జ':'ja','ఝ':'jha','ఞ':'nya',
+  'ట':'ta','ఠ':'tha','డ':'da','ఢ':'dha','ణ':'na','త':'tha','థ':'thha','ద':'da','ధ':'dha','న':'na',
+  'ప':'pa','ఫ':'pha','బ':'ba','భ':'bha','మ':'ma','య':'ya','ర':'ra','ల':'la','వ':'va','శ':'sha','ష':'sha','స':'sa','హ':'ha','ళ':'la'
 };
 
-function transliterateTelugu(text) {
-  if (!text) return '';
+const CONSONANTS = ['క','ఖ','గ','ఘ','ఙ','చ','ఛ','జ','ఝ','ఞ','ట','ఠ','డ','ఢ','ణ','త','థ','ద','ధ','న','ప','ఫ','బ','భ','మ','య','ర','ల','వ','శ','ష','స','హ','ళ'];
+const VOWEL_SIGNS = ['ా','ి','ీ','ు','ూ','ృ','ె','ే','ై','ొ','ో','ౌ','ం','ః'];
+
+function transliterate(text) {
   let result = '';
-  let i = 0;
-  while (i < text.length) {
-    // Check two-char combos first
-    let two = text.slice(i, i+2);
-    if (TELUGU_MAP[two] !== undefined) {
-      result += TELUGU_MAP[two];
-      i += 2;
-      continue;
-    }
-    let ch = text[i];
-    if (TELUGU_MAP[ch] !== undefined) {
-      result += TELUGU_MAP[ch];
-    } else if (ch === ' ' || ch === '\n') {
-      result += ch;
-    } else if (ch.charCodeAt(0) < 128) {
-      result += ch; // ASCII passthrough
-    } else {
-      result += ch; // unknown Telugu, keep as-is
-    }
-    i++;
-  }
-  // Clean up: remove duplicate vowels from consonant+matra combos
-  // e.g. "kaa" is correct, but let's do light normalization
-  return result.trim();
-}
+  for (let i = 0; i < text.length; i++) {
+    let char = text[i];
+    let next = text[i+1];
+    let mapped = TELUGU_MAP[char] || char;
 
-// ─── Speech Recognition ──────────────────────────────────────────────────────
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const micBtn = document.getElementById('micBtn');
-const micStatus = document.getElementById('micStatus');
-const teluguOutput = document.getElementById('teluguOutput');
-const englishOutput = document.getElementById('englishOutput');
-const waveform = document.getElementById('waveform');
-const micOuterWrap = document.getElementById('mic-outer-wrap');
-const copyBtn = document.getElementById('copyBtn');
-const clearBtn = document.getElementById('clearBtn');
-const historyList = document.getElementById('historyList');
-const toast = document.getElementById('toast');
-
-let recognition = null;
-let isRecording = false;
-let sessionHistory = [];
-let currentTelugu = '';
-let currentEnglish = '';
-
-if (!SpeechRecognition) {
-  document.getElementById('unsupported-msg').style.display = 'block';
-  micBtn.disabled = true;
-  micBtn.style.opacity = '0.3';
-  micBtn.style.cursor = 'not-allowed';
-} else {
-  recognition = new SpeechRecognition();
-  recognition.lang = 'te-IN';
-  recognition.interimResults = true;
-  recognition.continuous = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.onstart = () => {
-    isRecording = true;
-    micBtn.classList.add('active');
-    micStatus.textContent = 'Listening…';
-    micStatus.classList.add('active');
-    waveform.classList.add('visible');
-    [document.getElementById('pr1'), document.getElementById('pr2'), document.getElementById('pr3')]
-      .forEach(el => el.parentElement && el.parentElement.classList.add('recording'));
-    micOuterWrap.classList.add('recording');
-  };
-
-  recognition.onend = () => {
-    isRecording = false;
-    micBtn.classList.remove('active');
-    micStatus.textContent = 'Tap to speak Telugu';
-    micStatus.classList.remove('active');
-    waveform.classList.remove('visible');
-    micOuterWrap.classList.remove('recording');
-  };
-
-  recognition.onerror = (e) => {
-    recognition.onend();
-    if (e.error === 'no-speech') {
-      showToast('No speech detected');
-    } else if (e.error === 'not-allowed') {
-      showToast('Microphone access denied');
-    } else {
-      showToast('Error: ' + e.error);
-    }
-  };
-
-  recognition.onresult = (e) => {
-    let interimTranscript = '';
-    let finalTranscript = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const transcript = e.results[i][0].transcript;
-      if (e.results[i].isFinal) {
-        finalTranscript += transcript;
-      } else {
-        interimTranscript += transcript;
+    if (CONSONANTS.includes(char)) {
+      if (next && (VOWEL_SIGNS.includes(next) || next === '్')) {
+        mapped = mapped.replace(/a$/, '');
+        if (next === '్') i++; // Skip halant
       }
     }
-
-    const display = finalTranscript || interimTranscript;
-    if (display) {
-      setTeluguText(display);
-    }
-
-    if (finalTranscript.trim()) {
-      addToHistory(finalTranscript.trim(), transliterateTelugu(finalTranscript.trim()));
-    }
-  };
-}
-
-function setTeluguText(text) {
-  currentTelugu = text;
-  currentEnglish = transliterateTelugu(text);
-
-  teluguOutput.classList.add('has-content');
-  englishOutput.classList.add('has-content');
-
-  // Keep placeholder spans but set text content
-  const tPlaceholder = teluguOutput.querySelector('.placeholder-text');
-  teluguOutput.textContent = text;
-  if (tPlaceholder) teluguOutput.appendChild(tPlaceholder);
-
-  const ePlaceholder = englishOutput.querySelector('.placeholder-text');
-  englishOutput.textContent = currentEnglish;
-  if (ePlaceholder) englishOutput.appendChild(ePlaceholder);
-}
-
-function addToHistory(telugu, english) {
-  sessionHistory.unshift({ telugu, english, time: new Date() });
-  if (sessionHistory.length > 20) sessionHistory.pop();
-  renderHistory();
-}
-
-function renderHistory() {
-  if (sessionHistory.length === 0) {
-    historyList.innerHTML = '<div class="empty-history">No entries yet</div>';
-    return;
+    result += mapped;
   }
-  historyList.innerHTML = sessionHistory.map((item, idx) => {
-    const mins = Math.floor((Date.now() - item.time) / 60000);
-    const timeStr = mins < 1 ? 'just now' : mins + 'm ago';
-    return `<div class="history-item fade-in" onclick="loadHistory(${idx})">
-      <div>
-        <div class="history-telugu">${item.telugu}</div>
-        <div class="history-en">${item.english}</div>
-      </div>
-      <div class="history-time">${timeStr}</div>
-    </div>`;
-  }).join('');
+  return result;
 }
 
-window.loadHistory = function(idx) {
-  const item = sessionHistory[idx];
-  if (item) {
-    setTeluguText(item.telugu);
-    showToast('Loaded from history');
+const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!Speech) alert("Speech API not supported in this browser.");
+
+const rec = new Speech();
+rec.lang = 'te-IN';
+rec.interimResults = true;
+
+const btn = document.getElementById('micBtn');
+const teluguDiv = document.getElementById('teluguOutput');
+const englishDiv = document.getElementById('englishOutput');
+const historyList = document.getElementById('historyList');
+
+let recording = false;
+
+btn.onclick = () => {
+  if (recording) { rec.stop(); return; }
+  rec.start();
+};
+
+rec.onstart = () => {
+  recording = true;
+  btn.classList.add('active');
+  document.getElementById('micContainer').classList.add('recording');
+  document.getElementById('waveform').classList.add('visible');
+  document.getElementById('micStatus').textContent = "LISTENING...";
+};
+
+rec.onend = () => {
+  recording = false;
+  btn.classList.remove('active');
+  document.getElementById('micContainer').classList.remove('recording');
+  document.getElementById('waveform').classList.remove('visible');
+  document.getElementById('micStatus').textContent = "TAP TO SPEAK";
+};
+
+rec.onresult = (e) => {
+  let transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+  teluguDiv.innerHTML = transcript;
+  let english = transliterate(transcript);
+  englishDiv.innerHTML = english;
+  
+  if (e.results[0].isFinal) {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    item.innerHTML = `<div><div class="history-telugu">${transcript}</div><div class="history-en">${english}</div></div>`;
+    historyList.prepend(item);
   }
 };
 
-micBtn.addEventListener('click', () => {
-  if (!recognition) return;
-  if (isRecording) {
-    recognition.stop();
-  } else {
-    try {
-      recognition.start();
-    } catch(e) {
-      showToast('Already starting…');
-    }
-  }
-});
+document.getElementById('clearBtn').onclick = () => {
+  teluguDiv.innerHTML = '<span class="placeholder">Awaiting input...</span>';
+  englishDiv.innerHTML = '<span class="placeholder">Transliteration...</span>';
+};
 
-copyBtn.addEventListener('click', () => {
-  if (!currentEnglish) { showToast('Nothing to copy'); return; }
-  const text = currentEnglish;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('Copied!');
-  }
-});
-
-clearBtn.addEventListener('click', () => {
-  currentTelugu = '';
-  currentEnglish = '';
-  teluguOutput.classList.remove('has-content');
-  englishOutput.classList.remove('has-content');
-  teluguOutput.textContent = '';
-  teluguOutput.innerHTML = '<span class="placeholder-text">— recognized speech —</span>';
-  englishOutput.textContent = '';
-  englishOutput.innerHTML = '<span class="placeholder-text">— transliterated text —</span>';
-  showToast('Cleared');
-});
-
-function showToast(msg) {
-  toast.textContent = msg;
+document.getElementById('copyBtn').onclick = () => {
+  const txt = englishDiv.innerText;
+  if (txt.includes('...')) return;
+  navigator.clipboard.writeText(txt);
+  const toast = document.getElementById('toast');
+  toast.textContent = "COPIED TO CLIPBOARD";
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2200);
-}
-
-// Update history timestamps every minute
-setInterval(renderHistory, 60000);
+  setTimeout(() => toast.classList.remove('show'), 2000);
+};
 </script>
 </body>
 </html>
