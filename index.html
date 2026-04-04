@@ -2,147 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Telugu Voice → English</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Sans+Telugu:wght@300;400;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Telugu Transliterate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Noto+Sans+Telugu:wght@400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0c0a08;
-    --surface: #161310;
-    --border: #2a2420;
-    --amber: #e8a838;
-    --amber-dim: #9b6f1a;
-    --amber-glow: rgba(232, 168, 56, 0.12);
-    --red: #c0392b;
-    --text: #f0e6d3;
-    --text-dim: #7a6a58;
-    --text-muted: #3d3228;
+    --bg: #0c0a08; --surface: #161310; --border: #2a2420;
+    --amber: #e8a838; --text: #f0e6d3; --text-dim: #7a6a58;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    overflow-x: hidden;
-  }
-
-  .grain {
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  .container { width: 100%; max-width: 560px; position: relative; z-index: 1; }
-
-  header { padding: 40px 0 32px; text-align: center; }
-  .logo-line { display: flex; align-items: center; justify-content: center; gap: 12px; }
-  .logo-glyph { font-family: 'Noto Sans Telugu', serif; font-size: 28px; color: var(--amber); }
-  .logo-en { font-family: 'Playfair Display', serif; font-size: 22px; }
-  .tagline { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 6px; }
-
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 12px; }
-  .card-section { padding: 20px; border-bottom: 1px solid var(--border); }
-  .card-section:last-child { border-bottom: none; }
-
-  .section-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* Mic Button & Pulse */
-  .mic-area { display: flex; flex-direction: column; align-items: center; padding: 30px; gap: 16px; }
-  .mic-btn { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--amber-dim); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; z-index: 10; }
-  .mic-btn.active { border-color: var(--red); background: rgba(192, 57, 43, 0.1); }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Mono', monospace; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+  .container { width: 100%; max-width: 500px; }
+  header { padding: 30px 0; text-align: center; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+  .label { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; }
   
-  .pulse-ring { position: absolute; width: 72px; height: 72px; border-radius: 50%; border: 1px solid var(--amber-dim); opacity: 0; pointer-events: none; }
-  .recording .pulse-ring { animation: pulse 1.5s ease-out infinite; opacity: 1; }
-  @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
+  /* Input Area */
+  textarea {
+    width: 100%; background: #000; border: 1px solid var(--border);
+    color: var(--text); font-family: 'Noto Sans Telugu', serif;
+    font-size: 18px; padding: 12px; border-radius: 4px; resize: none; outline: none;
+  }
+  textarea:focus { border-color: var(--amber); }
 
-  /* Waveform */
-  .waveform { display: flex; align-items: center; gap: 3px; height: 20px; opacity: 0; }
-  .waveform.visible { opacity: 1; }
-  .wave-bar { width: 3px; height: 4px; background: var(--amber); border-radius: 2px; }
-  .visible .wave-bar { animation: wave 0.8s ease-in-out infinite; }
-  @keyframes wave { 0%, 100% { height: 4px; } 50% { height: 20px; } }
-
-  /* Output Boxes */
-  .output-box { background: var(--bg); padding: 16px; min-height: 60px; position: relative; border-radius: 2px; }
-  .output-box.telugu { font-family: 'Noto Sans Telugu', serif; font-size: 20px; }
-  .output-box.english { font-family: 'IBM Plex Mono', monospace; color: var(--amber); font-size: 16px; }
-  .placeholder { color: var(--text-muted); font-size: 12px; font-family: 'IBM Plex Mono'; position: absolute; }
-
-  /* Actions & History */
-  .action-bar { display: flex; gap: 8px; padding: 12px 20px; }
-  .action-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
-  .action-btn:hover { color: var(--amber); border-color: var(--amber); }
-
-  .history-list { max-height: 200px; overflow-y: auto; }
-  .history-item { padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-  .history-item:hover { background: var(--border); }
-  .history-telugu { font-family: 'Noto Sans Telugu'; font-size: 14px; }
-  .history-en { font-size: 11px; color: var(--amber-dim); }
-
-  .toast { position: fixed; bottom: 20px; background: var(--surface); border: 1px solid var(--amber); padding: 8px 16px; font-size: 11px; color: var(--amber); opacity: 0; transition: 0.3s; pointer-events: none; }
-  .toast.show { opacity: 1; }
+  .mic-btn {
+    width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--amber);
+    background: transparent; color: var(--amber); display: flex; 
+    align-items: center; justify-content: center; margin: 20px auto;
+    transition: 0.3s;
+  }
+  .mic-btn.active { background: rgba(232, 168, 56, 0.2); transform: scale(1.1); }
+  
+  .output { color: var(--amber); font-size: 18px; min-height: 40px; padding: 10px; background: #000; border-radius: 4px; }
+  .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+  button.action { flex: 1; padding: 12px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
+  
+  #status { text-align: center; font-size: 10px; color: var(--amber); margin-bottom: 10px; height: 15px; }
 </style>
 </head>
 <body>
-<div class="grain"></div>
+
 <div class="container">
   <header>
-    <div class="logo-line">
-      <span class="logo-glyph">తె</span>
-      <span style="color:var(--amber-dim)">—›</span>
-      <span class="logo-en">English</span>
-    </div>
-    <div class="tagline">Local P2P Voice Transliteration</div>
+    <h2 style="font-family:'Playfair Display'">Telugu → English</h2>
+    <p style="font-size:10px; color:var(--text-dim); letter-spacing:2px;">IPHONE OPTIMIZED</p>
   </header>
 
+  <div id="status"></div>
+
   <div class="card">
-    <div class="mic-area" id="micContainer">
-      <div style="position:relative; display:flex; justify-content:center; align-items:center;">
-        <div class="pulse-ring"></div>
-        <button class="mic-btn" id="micBtn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-        </button>
-      </div>
-      <div id="micStatus" style="font-size:10px; color:var(--text-dim); letter-spacing:2px;">TAP TO SPEAK</div>
-      <div class="waveform" id="waveform">
-        <div class="wave-bar"></div><div class="wave-bar" style="animation-delay:0.1s"></div><div class="wave-bar" style="animation-delay:0.2s"></div><div class="wave-bar" style="animation-delay:0.3s"></div><div class="wave-bar" style="animation-delay:0.4s"></div>
-      </div>
-    </div>
-
-    <div class="card-section">
-      <div class="section-label">Telugu Script</div>
-      <div class="output-box telugu" id="teluguOutput"><span class="placeholder">Awaiting input...</span></div>
-    </div>
-
-    <div class="card-section">
-      <div class="section-label">English Phonetic</div>
-      <div class="output-box english" id="englishOutput"><span class="placeholder">Transliteration...</span></div>
-    </div>
-
-    <div class="action-bar">
-      <button class="action-btn" id="copyBtn">Copy English</button>
-      <button class="action-btn" id="clearBtn">Clear</button>
-    </div>
+    <div class="label">Input (Voice or Type)</div>
+    <!-- We use a textarea so iPhone Chrome users can use the keyboard microphone -->
+    <textarea id="teluguInput" rows="3" placeholder="Tap here and use keyboard mic..."></textarea>
+    
+    <button class="mic-btn" id="micBtn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
   </div>
 
   <div class="card">
-    <div class="card-section" style="padding:10px 20px;"><div class="section-label">History</div></div>
-    <div class="history-list" id="historyList"></div>
+    <div class="label">English Transliteration</div>
+    <div class="output" id="englishOutput">...</div>
+    <div class="btn-row">
+      <button class="action" onclick="copyText()">Copy</button>
+      <button class="action" onclick="clearAll()">Clear</button>
+    </div>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 const TELUGU_MAP = {
@@ -153,20 +79,16 @@ const TELUGU_MAP = {
   'ప':'pa','ఫ':'pha','బ':'ba','భ':'bha','మ':'ma','య':'ya','ర':'ra','ల':'la','వ':'va','శ':'sha','ష':'sha','స':'sa','హ':'ha','ళ':'la'
 };
 
-const CONSONANTS = ['క','ఖ','గ','ఘ','ఙ','చ','ఛ','జ','ఝ','ఞ','ట','ఠ','డ','ఢ','ణ','త','థ','ద','ధ','న','ప','ఫ','బ','భ','మ','య','ర','ల','వ','శ','ష','స','హ','ళ'];
-const VOWEL_SIGNS = ['ా','ి','ీ','ు','ూ','ృ','ె','ే','ై','ొ','ో','ౌ','ం','ః'];
-
 function transliterate(text) {
   let result = '';
   for (let i = 0; i < text.length; i++) {
     let char = text[i];
     let next = text[i+1];
     let mapped = TELUGU_MAP[char] || char;
-
-    if (CONSONANTS.includes(char)) {
-      if (next && (VOWEL_SIGNS.includes(next) || next === '్')) {
+    if (['క','ఖ','గ','ఘ','ఙ','చ','ఛ','జ','ఝ','ఞ','ట','ఠ','డ','ఢ','ణ','త','థ','ద','ధ','న','ప','ఫ','బ','భ','మ','య','ర','ల','వ','శ','ష','స','హ','ళ'].includes(char)) {
+      if (next && (['ా','ి','ీ','ు','ూ','ృ','ె','ే','ై','ొ','ో','ౌ','ం','ః'].includes(next) || next === '్')) {
         mapped = mapped.replace(/a$/, '');
-        if (next === '్') i++; // Skip halant
+        if (next === '్') i++;
       }
     }
     result += mapped;
@@ -174,69 +96,60 @@ function transliterate(text) {
   return result;
 }
 
+const inputArea = document.getElementById('teluguInput');
+const outputDiv = document.getElementById('englishOutput');
+const statusDiv = document.getElementById('status');
+const micBtn = document.getElementById('micBtn');
+
+// Auto-transliterate as you type or dictate
+inputArea.addEventListener('input', () => {
+  outputDiv.innerText = transliterate(inputArea.value);
+});
+
+// Speech Recognition Setup
 const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (!Speech) alert("Speech API not supported in this browser.");
 
-const rec = new Speech();
-rec.lang = 'te-IN';
-rec.interimResults = true;
+if (Speech) {
+  const recognition = new Speech();
+  recognition.lang = 'te-IN';
+  recognition.interimResults = true;
 
-const btn = document.getElementById('micBtn');
-const teluguDiv = document.getElementById('teluguOutput');
-const englishDiv = document.getElementById('englishOutput');
-const historyList = document.getElementById('historyList');
+  micBtn.onclick = () => {
+    try { recognition.start(); } catch(e) { recognition.stop(); }
+  };
 
-let recording = false;
+  recognition.onstart = () => {
+    micBtn.classList.add('active');
+    statusDiv.innerText = "SYSTEM MIC ACTIVE";
+  };
 
-btn.onclick = () => {
-  if (recording) { rec.stop(); return; }
-  rec.start();
-};
+  recognition.onend = () => {
+    micBtn.classList.remove('active');
+    statusDiv.innerText = "";
+  };
 
-rec.onstart = () => {
-  recording = true;
-  btn.classList.add('active');
-  document.getElementById('micContainer').classList.add('recording');
-  document.getElementById('waveform').classList.add('visible');
-  document.getElementById('micStatus').textContent = "LISTENING...";
-};
+  recognition.onresult = (e) => {
+    const t = Array.from(e.results).map(r => r[0].transcript).join('');
+    inputArea.value = t;
+    outputDiv.innerText = transliterate(t);
+  };
+} else {
+  // If Chrome on iPhone, we hide the specialized mic button and tell them to use the keyboard
+  micBtn.style.display = "none";
+  statusDiv.innerText = "USE KEYBOARD MIC ICON";
+}
 
-rec.onend = () => {
-  recording = false;
-  btn.classList.remove('active');
-  document.getElementById('micContainer').classList.remove('recording');
-  document.getElementById('waveform').classList.remove('visible');
-  document.getElementById('micStatus').textContent = "TAP TO SPEAK";
-};
+function copyText() {
+  navigator.clipboard.writeText(outputDiv.innerText);
+  statusDiv.innerText = "COPIED!";
+  setTimeout(() => statusDiv.innerText = "", 2000);
+}
 
-rec.onresult = (e) => {
-  let transcript = Array.from(e.results).map(r => r[0].transcript).join('');
-  teluguDiv.innerHTML = transcript;
-  let english = transliterate(transcript);
-  englishDiv.innerHTML = english;
-  
-  if (e.results[0].isFinal) {
-    const item = document.createElement('div');
-    item.className = 'history-item';
-    item.innerHTML = `<div><div class="history-telugu">${transcript}</div><div class="history-en">${english}</div></div>`;
-    historyList.prepend(item);
-  }
-};
-
-document.getElementById('clearBtn').onclick = () => {
-  teluguDiv.innerHTML = '<span class="placeholder">Awaiting input...</span>';
-  englishDiv.innerHTML = '<span class="placeholder">Transliteration...</span>';
-};
-
-document.getElementById('copyBtn').onclick = () => {
-  const txt = englishDiv.innerText;
-  if (txt.includes('...')) return;
-  navigator.clipboard.writeText(txt);
-  const toast = document.getElementById('toast');
-  toast.textContent = "COPIED TO CLIPBOARD";
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-};
+function clearAll() {
+  inputArea.value = "";
+  outputDiv.innerText = "...";
+}
 </script>
+
 </body>
 </html>
